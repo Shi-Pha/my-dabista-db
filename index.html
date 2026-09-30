@@ -1,0 +1,4034 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>自分用ダビスタ競走馬DB</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Yu Gothic", "Meiryo", Arial, sans-serif;
+    background: #f2f2f2;
+    color: #333;
+}
+
+header {
+    background: #3251BC;
+    color: white;
+    padding: 15px 22px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.container {
+    width: 100%;
+    max-width: 1800px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+.panel {
+    background: white;
+    margin-bottom: 18px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.panel-title {
+    background: #eeeeee;
+    border-bottom: 1px solid #d0d0d0;
+    padding: 10px 14px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.panel-body {
+    padding: 16px;
+}
+
+.overall-record {
+    margin-left: 12px;
+    font-size: 15px;
+    color: #444;
+}
+
+.award-area {
+    margin: 0 0 14px 0;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #fafafa;
+}
+
+.award-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 9px;
+}
+
+.award-form {
+    display: grid;
+    grid-template-columns: 150px minmax(240px, 420px) auto;
+    gap: 8px;
+    align-items: end;
+}
+
+.award-form .form-group {
+    min-width: 0;
+}
+
+.award-list {
+    margin-top: 12px;
+    border-top: 1px solid #ddd;
+}
+
+.award-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 4px;
+    border-bottom: 1px solid #e2e2e2;
+    font-size: 15px;
+}
+
+.award-item-year {
+    min-width: 72px;
+    font-weight: bold;
+}
+
+.award-item-name {
+    flex: 1;
+}
+
+.award-item-action {
+    flex-shrink: 0;
+}
+
+.award-empty {
+    padding-top: 8px;
+    color: #777;
+    font-size: 13px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    gap: 13px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.form-wide {
+    grid-column: span 2;
+}
+
+input,
+select {
+    width: 100%;
+    height: 36px;
+    padding: 6px 9px;
+    border: 1px solid #c8c8c8;
+    border-radius: 3px;
+    background: white;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #3251BC;
+}
+
+.surface-distance {
+    display: flex;
+    gap: 6px;
+}
+
+.surface-distance select:first-child {
+    width: 90px;
+    flex-shrink: 0;
+}
+
+.surface-distance select:last-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.button-area {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+button {
+    border: none;
+    border-radius: 3px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #3251BC;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #29449f;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5c636a;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #bb2d3b;
+}
+
+.btn-backup {
+    background: #198754;
+    color: white;
+}
+
+.btn-backup:hover {
+    background: #157347;
+}
+
+.horse-select-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.horse-select-area select {
+    width: 300px;
+}
+
+/* =========================================================
+   馬選択欄の馬ごとの色
+   ※ select本体には色を付けない
+========================================================= */
+
+.horse-option-g3 {
+    background: #d9a066;
+    color: #333;
+}
+
+.horse-option-g2 {
+    background: #8fc4e8;
+    color: #333;
+}
+
+.horse-option-g1 {
+    background: #fff06a;
+    color: #333;
+}
+
+.horse-option-award {
+    background: #bfe8c7;
+    color: #1f4d2b;
+}
+
+.backup-area {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #ddd;
+}
+
+.backup-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.backup-description {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.cloud-status {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #666;
+}
+
+.cloud-status.ok {
+    color: #198754;
+}
+
+.cloud-status.error {
+    color: #dc3545;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 1350px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 13px;
+}
+
+th,
+td {
+    border: 1px solid #bdbdbd;
+    padding: 5px 4px;
+    text-align: center;
+    white-space: nowrap;
+    height: 31px;
+}
+
+th {
+    background: #eeeeee;
+    color: #333;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+tbody tr:hover {
+    background: #f3f8f5;
+}
+
+th:nth-child(1),
+td:nth-child(1) {
+    width: 120px;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 75px;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 280px;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 50px;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+    width: 48px;
+}
+
+th:nth-child(6),
+td:nth-child(6) {
+    width: 48px;
+}
+
+th:nth-child(7),
+td:nth-child(7) {
+    width: 90px;
+}
+
+th:nth-child(8),
+td:nth-child(8) {
+    width: 60px;
+}
+
+th:nth-child(9),
+td:nth-child(9) {
+    width: 90px;
+}
+
+th:nth-child(10),
+td:nth-child(10) {
+    width: 70px;
+}
+
+th:nth-child(11),
+td:nth-child(11) {
+    width: 70px;
+}
+
+th:nth-child(12),
+td:nth-child(12) {
+    width: 100px;
+}
+
+.race-name-cell {
+    text-align: left;
+}
+
+.race-name {
+    color: #333;
+    font-weight: bold;
+}
+
+.race-name-cell-g3 {
+    background: #d9a066 !important;
+}
+
+.race-name-cell-g2 {
+    background: #8fc4e8 !important;
+}
+
+.race-name-cell-g1 {
+    background: #fff06a !important;
+}
+
+.race-class-badge {
+    display: inline-block;
+    margin-left: 5px;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1.2;
+    color: #333;
+}
+
+.race-class-g3 {
+    background: #d9a066;
+}
+
+.race-class-g2 {
+    background: #8fc4e8;
+}
+
+.race-class-g1 {
+    background: #fff06a;
+}
+
+.race-class-normal {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.rank-gold {
+    background: #fff06a !important;
+    font-weight: bold;
+}
+
+.rank-silver {
+    background: #8fc4e8 !important;
+    font-weight: bold;
+}
+
+.rank-bronze {
+    background: #d9a066 !important;
+    font-weight: bold;
+}
+
+.btn-edit-small,
+.btn-delete-small {
+    padding: 3px 7px;
+    font-size: 10px;
+    margin: 1px;
+}
+
+.btn-edit-small {
+    background: #0d6efd;
+    color: white;
+}
+
+.btn-delete-small {
+    background: #dc3545;
+    color: white;
+}
+
+.empty-message {
+    padding: 30px 10px;
+    text-align: center;
+    color: #777;
+}
+
+
+/* =========================================================
+   条件別成績
+========================================================= */
+.stats-panel { margin-top: 18px; }
+.stats-section { margin-bottom: 18px; }
+.stats-section:last-child { margin-bottom: 0; }
+.stats-section-title { font-size: 14px; font-weight: bold; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #ddd; }
+.stats-list { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+.stats-item { min-width: 210px; font-size: 14px; line-height: 1.8; }
+.stats-label { display: inline-block; width: 70px; font-weight: bold; }
+@media (max-width: 600px) { .stats-item { min-width: 100%; } }
+
+@media (max-width: 900px) {
+    .form-grid {
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+    }
+
+    .form-wide {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 0 8px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-wide {
+        grid-column: span 1;
+    }
+
+    .horse-select-area select {
+        width: 100%;
+    }
+
+    .award-form {
+        grid-template-columns: 1fr;
+    }
+
+    .award-item {
+        flex-wrap: wrap;
+    }
+
+    .award-item-action {
+        width: 100%;
+    }
+
+    .award-item-action button {
+        width: 100%;
+    }
+
+    .backup-area button {
+        width: 100%;
+    }
+}
+</style>
+<!-- =========================================================
+     Firebase / Cloud Firestore
+========================================================= -->
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyB2z2Q7CTX6Wt2HBIUAL4XyZaExNYZTULK",
+    authDomain: "my-dabista-db.firebaseapp.com",
+    projectId: "my-dabista-db",
+    storageBucket: "my-dabista-db.firebasestorage.app",
+    messagingSenderId: "938944557366",
+    appId: "1:938944557366:web:aa6d7a4a6996608abb0397"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const cloudDataRef = db.collection("appData").doc("main");
+</script>
+
+</head>
+
+<body>
+
+<header>自分用ダビスタ競走馬DB</header>
+
+<div class="container">
+
+<!-- =====================================================
+     馬登録
+===================================================== -->
+
+<div class="panel">
+
+    <div class="panel-title">
+        馬登録
+    </div>
+
+    <div class="panel-body">
+
+        <div class="form-group">
+
+            <label>馬名</label>
+
+            <input
+                type="text"
+                id="horseName"
+                placeholder="例：○○号"
+            >
+
+        </div>
+
+        <div class="button-area">
+
+            <button
+                class="btn-primary"
+                onclick="addHorse()"
+            >
+                馬を登録
+            </button>
+
+        </div>
+
+        <div class="horse-select-area">
+
+            <select id="horseSelect">
+
+                <option value="">
+                    馬を選択してください
+                </option>
+
+            </select>
+
+            <button
+                class="btn-danger"
+                onclick="deleteHorse()"
+            >
+                選択中の馬を削除
+            </button>
+
+        </div>
+
+        <div class="backup-area">
+
+            <div class="backup-title">
+                データバックアップ
+            </div>
+
+            <div class="backup-description">
+                登録した馬・レースデータをファイルとして保存できます。
+                プログラムを変更する前などにバックアップしてください。
+            </div>
+
+            <div class="button-area">
+
+                <button
+                    class="btn-backup"
+                    onclick="backupData()"
+                >
+                    データをバックアップ
+                </button>
+
+                <button
+                    class="btn-secondary"
+                    onclick="document.getElementById('backupFile').click()"
+                >
+                    バックアップから復元
+                </button>
+
+            </div>
+
+            <input
+                type="file"
+                id="backupFile"
+                accept=".json,application/json"
+                style="display:none"
+                onchange="restoreData(event)"
+            >
+
+            <div id="cloudStatus" class="cloud-status">
+                クラウド同期を準備しています…
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- =====================================================
+     レース登録
+===================================================== -->
+
+<div class="panel">
+
+    <div class="panel-title">
+        レース登録・編集
+    </div>
+
+    <div class="panel-body">
+
+        <div class="form-grid">
+
+            <!-- 年 -->
+            <div class="form-group">
+
+                <label>年</label>
+
+                <input
+                    type="number"
+                    id="year"
+                    placeholder="例：2026"
+                    min="1900"
+                    max="2100"
+                >
+
+            </div>
+
+
+            <!-- 月 -->
+            <div class="form-group">
+
+                <label>月</label>
+
+                <select id="month">
+
+                    <option value="1">1月</option>
+                    <option value="2">2月</option>
+                    <option value="3">3月</option>
+                    <option value="4">4月</option>
+                    <option value="5">5月</option>
+                    <option value="6">6月</option>
+                    <option value="7">7月</option>
+                    <option value="8">8月</option>
+                    <option value="9">9月</option>
+                    <option value="10">10月</option>
+                    <option value="11">11月</option>
+                    <option value="12">12月</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- 開催週 -->
+            <div class="form-group">
+
+                <label>開催週</label>
+
+                <select id="week">
+
+                    <option value="1">1週</option>
+                    <option value="2">2週</option>
+                    <option value="3">3週</option>
+                    <option value="4">4週</option>
+                    <option value="5">5週</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- 開催場所 -->
+            <div class="form-group">
+
+                <label>開催場所</label>
+
+                <select id="place">
+
+                    <option value="">選択</option>
+
+                    <option value="中山">中山</option>
+                    <option value="東京">東京</option>
+                    <option value="京都">京都</option>
+                    <option value="阪神">阪神</option>
+                    <option value="福島">福島</option>
+                    <option value="新潟">新潟</option>
+                    <option value="中京">中京</option>
+                    <option value="函館">函館</option>
+                    <option value="札幌">札幌</option>
+                    <option value="小倉">小倉</option>
+                    <option value="大井">大井</option>
+                    <option value="船橋">船橋</option>
+                    <option value="川崎">川崎</option>
+                    <option value="浦和">浦和</option>
+                    <option value="盛岡">盛岡</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- レース名 -->
+            <div class="form-group">
+
+                <label>レース名</label>
+
+                <input
+                    type="text"
+                    id="raceName"
+                    placeholder="例：○○"
+                >
+
+            </div>
+
+
+            <!-- レース名種別 -->
+            <div class="form-group">
+
+                <label>レース名種別</label>
+
+                <select id="raceNameType">
+
+                    <option value="">その他</option>
+                    <option value="ステークス">ステークス</option>
+                    <option value="カップ">カップ</option>
+                    <option value="トロフィー">トロフィー</option>
+                    <option value="杯">杯</option>
+                    <option value="賞">賞</option>
+                    <option value="記念">記念</option>
+                    <option value="大賞典">大賞典</option>
+                    <option value="特別">特別</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- クラス -->
+            <div class="form-group">
+
+                <label>クラス</label>
+
+                <select id="raceClass">
+
+                    <option value="">その他</option>
+
+                    <option value="1勝クラス">
+                        1勝クラス
+                    </option>
+
+                    <option value="2勝クラス">
+                        2勝クラス
+                    </option>
+
+                    <option value="3勝クラス">
+                        3勝クラス
+                    </option>
+
+                    <option value="OP">
+                        OP
+                    </option>
+
+                    <option value="L">
+                        L
+                    </option>
+
+                    <option value="GⅢ">
+                        GⅢ
+                    </option>
+
+                    <option value="GⅡ">
+                        GⅡ
+                    </option>
+
+                    <option value="GⅠ">
+                        GⅠ
+                    </option>
+
+                    <option value="JpnⅢ">
+                        JpnⅢ
+                    </option>
+
+                    <option value="JpnⅡ">
+                        JpnⅡ
+                    </option>
+
+                    <option value="JpnⅠ">
+                        JpnⅠ
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- 頭数 -->
+            <div class="form-group">
+
+                <label>頭数</label>
+
+                <select id="numberOfHorses">
+
+                    <script>
+                    for (let i = 1; i <= 18; i++) {
+                        document.write(
+                            `<option value="${i}">${i}</option>`
+                        );
+                    }
+                    </script>
+
+                </select>
+
+            </div>
+
+
+            <!-- 人気 -->
+            <div class="form-group">
+
+                <label>人気</label>
+
+                <select id="popularity">
+
+                    <script>
+                    for (let i = 1; i <= 18; i++) {
+                        document.write(
+                            `<option value="${i}">${i}</option>`
+                        );
+                    }
+                    </script>
+
+                </select>
+
+            </div>
+
+
+            <!-- 着順 -->
+            <div class="form-group">
+
+                <label>着順</label>
+
+                <select id="finish">
+
+                    <script>
+                    for (let i = 1; i <= 18; i++) {
+                        document.write(
+                            `<option value="${i}">${i}</option>`
+                        );
+                    }
+                    </script>
+
+                    <option value="除外">
+                        除外
+                    </option>
+
+                    <option value="中止">
+                        中止
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- 騎手 -->
+            <div class="form-group">
+
+                <label>騎手</label>
+
+                <input
+                    type="text"
+                    id="jockey"
+                    placeholder="例：○○"
+                >
+
+            </div>
+
+
+            <!-- 斤量 -->
+            <div class="form-group">
+
+                <label>斤量</label>
+
+                <select id="weight">
+
+                    <option value="">
+                        選択
+                    </option>
+
+                    <script>
+                    for (
+                        let weight = 48;
+                        weight <= 65;
+                        weight += 0.5
+                    ) {
+
+                        const value =
+                            Number(
+                                weight.toFixed(1)
+                            );
+
+                        document.write(
+                            `<option value="${value}">${value}kg</option>`
+                        );
+
+                    }
+                    </script>
+
+                </select>
+
+            </div>
+
+
+            <!-- 馬場・距離 -->
+            <div class="form-group">
+
+                <label>馬場・距離</label>
+
+                <div class="surface-distance">
+
+                    <select id="surface">
+
+                        <option value="芝">
+                            芝
+                        </option>
+
+                        <option value="ダート">
+                            ダート
+                        </option>
+
+                    </select>
+
+
+                    <select id="distance">
+
+                        <option value="">
+                            選択
+                        </option>
+
+                        <option value="1000">
+                            1000m
+                        </option>
+
+                        <option value="1200">
+                            1200m
+                        </option>
+
+                        <option value="1400">
+                            1400m
+                        </option>
+
+                        <option value="1500">
+                            1500m
+                        </option>
+
+                        <option value="1600">
+                            1600m
+                        </option>
+
+                        <option value="1700">
+                            1700m
+                        </option>
+
+                        <option value="1800">
+                            1800m
+                        </option>
+
+                        <option value="1900">
+                            1900m
+                        </option>
+
+                        <option value="2000">
+                            2000m
+                        </option>
+
+                        <option value="2100">
+                            2100m
+                        </option>
+
+                        <option value="2200">
+                            2200m
+                        </option>
+
+                        <option value="2300">
+                            2300m
+                        </option>
+
+                        <option value="2400">
+                            2400m
+                        </option>
+
+                        <option value="2500">
+                            2500m
+                        </option>
+
+                        <option value="2600">
+                            2600m
+                        </option>
+
+                        <option value="3000">
+                            3000m
+                        </option>
+
+                        <option value="3200">
+                            3200m
+                        </option>
+
+                        <option value="3400">
+                            3400m
+                        </option>
+
+                        <option value="3600">
+                            3600m
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- 馬場状態 -->
+            <div class="form-group">
+
+                <label>馬場状態</label>
+
+                <select id="trackCondition">
+
+                    <option value="良">
+                        良
+                    </option>
+
+                    <option value="稍重">
+                        稍重
+                    </option>
+
+                    <option value="重">
+                        重
+                    </option>
+
+                    <option value="不良">
+                        不良
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- 馬体重 -->
+            <div class="form-group">
+
+                <label>馬体重</label>
+
+                <input
+                    type="number"
+                    id="horseWeight"
+                    placeholder="例：480"
+                    min="0"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="button-area">
+
+            <button
+                class="btn-primary"
+                onclick="addRace()"
+            >
+                レースを登録
+            </button>
+
+            <button
+                class="btn-secondary"
+                onclick="clearRaceForm()"
+            >
+                入力をクリア
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- =====================================================
+     競走成績
+===================================================== -->
+
+<div class="panel">
+
+    <div class="panel-title">
+
+        競走成績
+
+        <span
+            id="overallRecord"
+            class="overall-record"
+        >
+            0戦0勝 [0-0-0-0]
+        </span>
+
+    </div>
+
+    <div class="panel-body">
+
+        <div class="award-area">
+
+            <div class="award-title">
+                受賞歴
+            </div>
+
+            <div class="award-form">
+
+                <div class="form-group">
+                    <label>年度</label>
+                    <input
+                        type="number"
+                        id="awardYear"
+                        placeholder="例：2034"
+                        min="1"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>賞名</label>
+                    <select id="awardName">
+                        <option value="">選択</option>
+                        <option value="年度代表馬">年度代表馬</option>
+                        <option value="最優秀2歳牡馬">最優秀2歳牡馬</option>
+                        <option value="最優秀2歳牝馬">最優秀2歳牝馬</option>
+                        <option value="最優秀3歳牡馬">最優秀3歳牡馬</option>
+                        <option value="最優秀3歳牝馬">最優秀3歳牝馬</option>
+                        <option value="最優秀4歳以上牡馬">最優秀4歳以上牡馬</option>
+                        <option value="最優秀4歳以上牝馬">最優秀4歳以上牝馬</option>
+                        <option value="最優秀スプリンター">最優秀スプリンター</option>
+                        <option value="最優秀マイラー">最優秀マイラー</option>
+                        <option value="最優秀ダートホース">最優秀ダートホース</option>
+                    </select>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    onclick="addAward()"
+                >
+                    受賞歴を追加
+                </button>
+
+            </div>
+
+            <div id="awardList" class="award-list"></div>
+
+        </div>
+
+        <div
+            id="raceTable"
+            class="table-wrapper"
+        ></div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     条件別成績
+===================================================== -->
+<div class="panel stats-panel">
+    <div class="panel-title">条件別成績</div>
+    <div class="panel-body">
+        <div id="statsArea">
+            <div class="empty-message">馬を選択すると条件別成績が表示されます。</div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   データ読み込み・クラウド同期
+========================================================= */
+
+let horses =
+    JSON.parse(
+        localStorage.getItem(
+            "myKeibaHorses"
+        )
+    ) || [];
+
+let editingRaceId = null;
+let cloudSyncReady = false;
+let cloudListenerStarted = false;
+
+function setCloudStatus(message, type = "") {
+    const area = document.getElementById("cloudStatus");
+    if (!area) {
+        return;
+    }
+    area.textContent = message;
+    area.className = `cloud-status ${type}`.trim();
+}
+
+function normalizeHorseData() {
+    if (!Array.isArray(horses)) {
+        horses = [];
+    }
+
+    horses.forEach(horse => {
+        if (!Array.isArray(horse.races)) {
+            horse.races = [];
+        }
+
+        if (!Array.isArray(horse.awards)) {
+            horse.awards = [];
+        }
+
+        horse.races.forEach(race => {
+            race.raceClass = normalizeRaceClass(race.raceClass);
+        });
+
+        if (!horse.lastInput) {
+            horse.lastInput = getLastInputData(horse);
+        }
+    });
+}
+
+function saveLocalData() {
+    localStorage.setItem(
+        "myKeibaHorses",
+        JSON.stringify(horses)
+    );
+}
+
+/*
+   PC・スマホ共通のクラウドへ保存
+   localStorageも残すので、万一クラウドへ接続できない場合でも
+   その端末のデータは失われません。
+*/
+async function saveData() {
+    saveLocalData();
+
+    if (!cloudSyncReady) {
+        return false;
+    }
+
+    try {
+        await cloudDataRef.set({
+            horses: horses,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        setCloudStatus("クラウド同期：保存しました", "ok");
+        return true;
+    } catch (error) {
+        console.error("Firestoreへの保存に失敗しました:", error);
+        setCloudStatus("クラウド同期：保存に失敗しました（端末には保存済み）", "error");
+        return false;
+    }
+}
+
+async function initializeCloudSync() {
+    setCloudStatus("クラウド同期：接続しています…");
+
+    try {
+        const snapshot = await cloudDataRef.get();
+
+        if (snapshot.exists && snapshot.data() && Array.isArray(snapshot.data().horses)) {
+            const cloudHorses = snapshot.data().horses;
+
+            /*
+               Firestoreに既存データがある場合は、
+               PC・スマホ共通のクラウドデータを使用
+            */
+            horses = cloudHorses;
+            normalizeHorseData();
+            saveLocalData();
+            setCloudStatus("クラウド同期：接続済み", "ok");
+        } else {
+            /*
+               Firestoreがまだ空の場合、PCに既存データがあれば
+               それを最初のクラウドデータとして移行する。
+               まだデータのないスマホを先に開いても、
+               空データでPCのデータを上書きしない。
+            */
+            normalizeHorseData();
+            cloudSyncReady = true;
+
+            if (horses.length > 0) {
+                await saveData();
+                setCloudStatus("クラウド同期：接続済み・PCのデータをクラウドへ保存しました", "ok");
+            } else {
+                setCloudStatus("クラウド同期：接続済み・クラウドデータ待ち", "ok");
+            }
+        }
+
+        cloudSyncReady = true;
+
+        if (!cloudListenerStarted) {
+            cloudListenerStarted = true;
+
+            cloudDataRef.onSnapshot(snapshot => {
+                if (!snapshot.exists) {
+                    return;
+                }
+
+                const data = snapshot.data();
+
+                if (!Array.isArray(data.horses)) {
+                    return;
+                }
+
+                horses = data.horses;
+                normalizeHorseData();
+                saveLocalData();
+
+                const selectedHorseId =
+                    document.getElementById("horseSelect")?.value || "";
+
+                renderHorseList(selectedHorseId);
+                renderRaces();
+                setCloudStatus("クラウド同期：最新データを反映済み", "ok");
+            }, error => {
+                console.error("Firestore監視に失敗しました:", error);
+                setCloudStatus("クラウド同期：監視に失敗しました", "error");
+            });
+        }
+
+        renderHorseList();
+        renderRaces();
+
+    } catch (error) {
+        console.error("Firestoreへの接続に失敗しました:", error);
+        cloudSyncReady = false;
+        setCloudStatus("クラウド同期：接続できません。端末内データを使用中です", "error");
+    }
+}
+
+
+/* =========================================================
+   HTMLエスケープ
+========================================================= */
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   古いクラス表記を新しい表記へ変換
+========================================================= */
+
+function normalizeRaceClass(value) {
+
+    if (value === "G1") {
+        return "GⅠ";
+    }
+
+    if (value === "G2") {
+        return "GⅡ";
+    }
+
+    if (value === "G3") {
+        return "GⅢ";
+    }
+
+    return value || "";
+
+}
+
+
+/* =========================================================
+   クラスの色判定
+========================================================= */
+
+function getClassColorType(value) {
+
+    const raceClass =
+        normalizeRaceClass(
+            value
+        );
+
+    if (
+        raceClass === "GⅠ" ||
+        raceClass === "JpnⅠ"
+    ) {
+
+        return "g1";
+
+    }
+
+    if (
+        raceClass === "GⅡ" ||
+        raceClass === "JpnⅡ"
+    ) {
+
+        return "g2";
+
+    }
+
+    if (
+        raceClass === "GⅢ" ||
+        raceClass === "JpnⅢ"
+    ) {
+
+        return "g3";
+
+    }
+
+    return "";
+
+}
+
+
+/* =========================================================
+   馬の最高重賞勝利を判定
+
+   1 = G1
+   2 = G2
+   3 = G3
+   0 = 重賞勝利なし
+========================================================= */
+
+function getHorseHighestGrade(horse) {
+
+    let highestGrade = 0;
+
+    if (
+        !horse.races ||
+        !Array.isArray(
+            horse.races
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    horse.races.forEach(
+        race => {
+
+            /* 1着のみ */
+            if (
+                race.finish !== "1"
+            ) {
+
+                return;
+
+            }
+
+
+            const raceClass =
+                normalizeRaceClass(
+                    race.raceClass
+                );
+
+
+            /* G1 */
+            if (
+                raceClass === "GⅠ" ||
+                raceClass === "JpnⅠ"
+            ) {
+
+                highestGrade = 1;
+
+            }
+
+
+            /* G2 */
+            else if (
+                raceClass === "GⅡ" ||
+                raceClass === "JpnⅡ"
+            ) {
+
+                if (
+                    highestGrade === 0 ||
+                    highestGrade > 2
+                ) {
+
+                    highestGrade = 2;
+
+                }
+
+            }
+
+
+            /* G3 */
+            else if (
+                raceClass === "GⅢ" ||
+                raceClass === "JpnⅢ"
+            ) {
+
+                if (
+                    highestGrade === 0 ||
+                    highestGrade > 3
+                ) {
+
+                    highestGrade = 3;
+
+                }
+
+            }
+
+        }
+    );
+
+
+    return highestGrade;
+
+}
+
+
+/* =========================================================
+   既存データから前回入力値を取得
+
+   新しいデータには lastInput を保存するが、
+   古いデータには存在しないため、
+   その場合は最後のレースから取得する。
+========================================================= */
+
+function getLastInputData(horse) {
+
+    /* 新しい形式 */
+    if (
+        horse.lastInput &&
+        typeof horse.lastInput === "object"
+    ) {
+
+        return {
+
+            year:
+                horse.lastInput.year || "",
+
+            jockey:
+                horse.lastInput.jockey || "",
+
+            horseWeight:
+                horse.lastInput.horseWeight || ""
+
+        };
+
+    }
+
+
+    /* 古いデータの場合 */
+    if (
+        !horse.races ||
+        !Array.isArray(
+            horse.races
+        ) ||
+        horse.races.length === 0
+    ) {
+
+        return {
+
+            year: "",
+            jockey: "",
+            horseWeight: ""
+
+        };
+
+    }
+
+
+    /*
+       idが大きいものを
+       最後に登録したレースとみなす
+    */
+
+    const lastRace =
+        horse.races.reduce(
+            (latest, race) => {
+
+                if (!latest) {
+                    return race;
+                }
+
+                return (
+                    Number(race.id) >
+                    Number(latest.id)
+                )
+                    ? race
+                    : latest;
+
+            },
+            null
+        );
+
+
+    if (!lastRace) {
+
+        return {
+
+            year: "",
+            jockey: "",
+            horseWeight: ""
+
+        };
+
+    }
+
+
+    return {
+
+        year:
+            lastRace.year || "",
+
+        jockey:
+            lastRace.jockey || "",
+
+        horseWeight:
+            lastRace.horseWeight || ""
+
+    };
+
+}
+
+
+/* =========================================================
+   馬を選択したときの前回入力値をフォームへ反映
+========================================================= */
+
+function applyLastInputData(horse) {
+
+    if (!horse) {
+        return;
+    }
+
+
+    const lastInput =
+        getLastInputData(
+            horse
+        );
+
+
+    document.getElementById(
+        "year"
+    ).value =
+        lastInput.year;
+
+
+    document.getElementById(
+        "jockey"
+    ).value =
+        lastInput.jockey;
+
+
+    document.getElementById(
+        "horseWeight"
+    ).value =
+        lastInput.horseWeight;
+
+}
+
+
+function hasAwardHistory(horse) {
+
+    return Array.isArray(horse.awards) &&
+        horse.awards.length > 0;
+}
+
+
+/* =========================================================
+   馬一覧表示
+========================================================= */
+
+function renderHorseList(
+    selectedHorseId = null
+) {
+
+    const select =
+        document.getElementById(
+            "horseSelect"
+        );
+
+
+    /*
+       現在選択中の馬を保存
+       引数がなければ現在値を使用
+    */
+
+    if (
+        selectedHorseId === null
+    ) {
+
+        selectedHorseId =
+            select.value;
+
+    }
+
+
+    select.innerHTML =
+        `
+        <option value="">
+            馬を選択してください
+        </option>
+        `;
+
+
+    horses.forEach(
+        horse => {
+
+            const highestGrade =
+                getHorseHighestGrade(
+                    horse
+                );
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                horse.id;
+
+
+            /* 最優秀○○受賞馬を最優先で緑色 */
+
+            if (
+                hasAwardHistory(horse)
+            ) {
+
+                option.textContent =
+                    `${horse.name} (SRA賞受賞馬)`;
+
+                option.className =
+                    "horse-option-award";
+
+            }
+
+
+            /* G1馬 */
+
+            else if (
+                highestGrade === 1
+            ) {
+
+                option.textContent =
+                    `${horse.name} (G1馬)`;
+
+                option.className =
+                    "horse-option-g1";
+
+            }
+
+
+            /* G2勝ち重賞馬 */
+
+            else if (
+                highestGrade === 2
+            ) {
+
+                option.textContent =
+                    `${horse.name} (重賞馬)`;
+
+                option.className =
+                    "horse-option-g2";
+
+            }
+
+
+            /* G3勝ち重賞馬 */
+
+            else if (
+                highestGrade === 3
+            ) {
+
+                option.textContent =
+                    `${horse.name} (重賞馬)`;
+
+                option.className =
+                    "horse-option-g3";
+
+            }
+
+
+            /* 重賞勝利なし */
+
+            else {
+
+                option.textContent =
+                    horse.name;
+
+            }
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    /*
+       現在選択中の馬を復元
+    */
+
+    if (
+        selectedHorseId !== null &&
+        selectedHorseId !== ""
+    ) {
+
+        select.value =
+            String(
+                selectedHorseId
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   馬登録
+========================================================= */
+
+function addHorse() {
+
+    const input =
+        document.getElementById(
+            "horseName"
+        );
+
+
+    const name =
+        input.value.trim();
+
+
+    if (!name) {
+
+        alert(
+            "馬名を入力してください。"
+        );
+
+        return;
+
+    }
+
+
+    const horse = {
+
+        id:
+            Date.now(),
+
+        name:
+            name,
+
+        races:
+            [],
+
+        awards:
+            [],
+
+        lastInput: {
+
+            year:
+                "",
+
+            jockey:
+                "",
+
+            horseWeight:
+                ""
+
+        }
+
+    };
+
+
+    horses.push(
+        horse
+    );
+
+
+    saveData();
+
+
+    input.value =
+        "";
+
+
+    renderHorseList(
+        horse.id
+    );
+
+
+    clearRaceForm(
+        false
+    );
+
+
+    /*
+       新しく登録した馬なので
+       前回入力値はまだなし
+    */
+
+    renderRaces();
+
+}
+
+
+/* =========================================================
+   馬削除
+========================================================= */
+
+function deleteHorse() {
+
+    const select =
+        document.getElementById(
+            "horseSelect"
+        );
+
+
+    const horseId =
+        Number(
+            select.value
+        );
+
+
+    if (!horseId) {
+
+        alert(
+            "削除する馬を選択してください。"
+        );
+
+        return;
+
+    }
+
+
+    const horse =
+        horses.find(
+            h =>
+                h.id ===
+                horseId
+        );
+
+
+    if (!horse) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            `「${horse.name}」を削除しますか？\n\n` +
+            `登録したレースデータもすべて削除されます。`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    horses =
+        horses.filter(
+            h =>
+                h.id !==
+                horseId
+        );
+
+
+    saveData();
+
+
+    select.value =
+        "";
+
+
+    clearRaceForm(
+        false
+    );
+
+
+    renderHorseList();
+
+
+    renderRaces();
+
+}
+
+
+/* =========================================================
+   レース登録・編集
+========================================================= */
+
+function addRace() {
+
+    const horseId =
+        Number(
+            document.getElementById(
+                "horseSelect"
+            ).value
+        );
+
+
+    if (!horseId) {
+
+        alert(
+            "先に馬を選択してください。"
+        );
+
+        return;
+
+    }
+
+
+    const horse =
+        horses.find(
+            h =>
+                h.id ===
+                horseId
+        );
+
+
+    if (!horse) {
+        return;
+    }
+
+
+    const year =
+        document.getElementById(
+            "year"
+        ).value;
+
+
+    const jockey =
+        document.getElementById(
+            "jockey"
+        ).value.trim();
+
+
+    const horseWeight =
+        document.getElementById(
+            "horseWeight"
+        ).value;
+
+
+    const raceData = {
+
+        id:
+            editingRaceId ||
+            Date.now(),
+
+        year:
+            year,
+
+        month:
+            document.getElementById(
+                "month"
+            ).value,
+
+        week:
+            document.getElementById(
+                "week"
+            ).value,
+
+        place:
+            document.getElementById(
+                "place"
+            ).value,
+
+        raceName:
+            document.getElementById(
+                "raceName"
+            ).value.trim(),
+
+        raceNameType:
+            document.getElementById(
+                "raceNameType"
+            ).value,
+
+        raceClass:
+            document.getElementById(
+                "raceClass"
+            ).value,
+
+        numberOfHorses:
+            document.getElementById(
+                "numberOfHorses"
+            ).value,
+
+        popularity:
+            document.getElementById(
+                "popularity"
+            ).value,
+
+        finish:
+            document.getElementById(
+                "finish"
+            ).value,
+
+        jockey:
+            jockey,
+
+        weight:
+            document.getElementById(
+                "weight"
+            ).value,
+
+        surface:
+            document.getElementById(
+                "surface"
+            ).value,
+
+        distance:
+            document.getElementById(
+                "distance"
+            ).value,
+
+        trackCondition:
+            document.getElementById(
+                "trackCondition"
+            ).value,
+
+        horseWeight:
+            horseWeight
+
+    };
+
+
+    /* 編集 */
+    if (
+        editingRaceId
+    ) {
+
+        const index =
+            horse.races.findIndex(
+                race =>
+                    race.id ===
+                    editingRaceId
+            );
+
+
+        if (
+            index !== -1
+        ) {
+
+            horse.races[index] =
+                raceData;
+
+        }
+
+    }
+
+
+    /* 新規登録 */
+    else {
+
+        horse.races.push(
+            raceData
+        );
+
+    }
+
+
+    /*
+       馬ごとの前回入力値を保存
+    */
+
+    horse.lastInput = {
+
+        year:
+            year,
+
+        jockey:
+            jockey,
+
+        horseWeight:
+            horseWeight
+
+    };
+
+
+    /*
+       レースを新しい順に並べる
+    */
+
+    horse.races.sort(
+        (a, b) => {
+
+            const aYear =
+                Number(
+                    a.year
+                ) || 0;
+
+            const bYear =
+                Number(
+                    b.year
+                ) || 0;
+
+
+            if (
+                aYear !==
+                bYear
+            ) {
+
+                return (
+                    bYear -
+                    aYear
+                );
+
+            }
+
+
+            const aMonth =
+                Number(
+                    a.month
+                ) || 0;
+
+            const bMonth =
+                Number(
+                    b.month
+                ) || 0;
+
+
+            if (
+                aMonth !==
+                bMonth
+            ) {
+
+                return (
+                    bMonth -
+                    aMonth
+                );
+
+            }
+
+
+            const aWeek =
+                Number(
+                    a.week
+                ) || 0;
+
+            const bWeek =
+                Number(
+                    b.week
+                ) || 0;
+
+
+            if (
+                aWeek !==
+                bWeek
+            ) {
+
+                return (
+                    bWeek -
+                    aWeek
+                );
+
+            }
+
+
+            return (
+                (Number(b.id) || 0) -
+                (Number(a.id) || 0)
+            );
+
+        }
+    );
+
+
+    saveData();
+
+
+    /* レース登録後も年・騎手・馬体重を残す */
+    const savedLastInput = {
+        year: horse.lastInput.year || "",
+        jockey: horse.lastInput.jockey || "",
+        horseWeight: horse.lastInput.horseWeight || ""
+    };
+
+    clearRaceForm(false);
+
+    document.getElementById("year").value = savedLastInput.year;
+    document.getElementById("jockey").value = savedLastInput.jockey;
+    document.getElementById("horseWeight").value = savedLastInput.horseWeight;
+
+
+    /*
+       重賞勝利実績が変わる可能性があるので
+       馬一覧を更新
+    */
+
+    renderHorseList(
+        horse.id
+    );
+
+
+    renderRaces();
+
+}
+
+
+/* =========================================================
+   競走成績表示
+========================================================= */
+
+function renderRaces() {
+
+    const horseId =
+        Number(
+            document.getElementById(
+                "horseSelect"
+            ).value
+        );
+
+
+    const table =
+        document.getElementById(
+            "raceTable"
+        );
+
+
+    const overallRecord =
+        document.getElementById(
+            "overallRecord"
+        );
+
+
+    if (!horseId) {
+
+        overallRecord.textContent =
+            "0戦0勝 [0-0-0-0]";
+
+
+        table.innerHTML =
+            `
+            <div class="empty-message">
+                馬を選択すると競走成績が表示されます。
+            </div>
+            `;
+
+        renderStats();
+        renderAwards();
+        return;
+
+    }
+
+
+    const horse =
+        horses.find(
+            h =>
+                h.id ===
+                horseId
+        );
+
+
+    if (!horse) {
+
+        overallRecord.textContent =
+            "0戦0勝 [0-0-0-0]";
+
+        table.innerHTML =
+            "";
+
+        renderStats();
+        renderAwards();
+        return;
+
+    }
+
+
+    let races =
+        0;
+
+    let first =
+        0;
+
+    let second =
+        0;
+
+    let third =
+        0;
+
+    let fourthOrWorse =
+        0;
+
+
+    horse.races.forEach(
+        race => {
+
+            const finish =
+                race.finish;
+
+
+            if (
+                finish === "除外" ||
+                finish === "中止" ||
+                finish === ""
+            ) {
+
+                return;
+
+            }
+
+
+            races++;
+
+
+            if (
+                finish === "1"
+            ) {
+
+                first++;
+
+            }
+
+            else if (
+                finish === "2"
+            ) {
+
+                second++;
+
+            }
+
+            else if (
+                finish === "3"
+            ) {
+
+                third++;
+
+            }
+
+            else {
+
+                fourthOrWorse++;
+
+            }
+
+        }
+    );
+
+
+    overallRecord.textContent =
+        `${races}戦${first}勝 ` +
+        `[${first}-${second}-${third}-${fourthOrWorse}]`;
+
+
+    if (
+        !horse.races ||
+        horse.races.length === 0
+    ) {
+
+        table.innerHTML =
+            `
+            <div class="empty-message">
+                まだレースデータがありません。
+            </div>
+            `;
+
+        renderStats();
+        renderAwards();
+        return;
+
+    }
+
+
+    let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>開催</th>
+                    <th>開催場所</th>
+                    <th>レース名</th>
+                    <th>頭数</th>
+                    <th>人気</th>
+                    <th>着順</th>
+                    <th>騎手</th>
+                    <th>斤量</th>
+                    <th>距離</th>
+                    <th>馬場</th>
+                    <th>馬体重</th>
+                    <th>操作</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+    `;
+
+
+    horse.races.forEach(
+        race => {
+
+            /* 人気の色 */
+
+            let popularityClass =
+                "";
+
+
+            if (
+                race.popularity ===
+                "1"
+            ) {
+
+                popularityClass =
+                    "rank-gold";
+
+            }
+
+            else if (
+                race.popularity ===
+                "2"
+            ) {
+
+                popularityClass =
+                    "rank-silver";
+
+            }
+
+            else if (
+                race.popularity ===
+                "3"
+            ) {
+
+                popularityClass =
+                    "rank-bronze";
+
+            }
+
+
+            /* 着順の色 */
+
+            let finishClass =
+                "";
+
+
+            if (
+                race.finish ===
+                "1"
+            ) {
+
+                finishClass =
+                    "rank-gold";
+
+            }
+
+            else if (
+                race.finish ===
+                "2"
+            ) {
+
+                finishClass =
+                    "rank-silver";
+
+            }
+
+            else if (
+                race.finish ===
+                "3"
+            ) {
+
+                finishClass =
+                    "rank-bronze";
+
+            }
+
+
+            /* クラス */
+
+            const displayClass =
+                normalizeRaceClass(
+                    race.raceClass
+                );
+
+
+            const colorType =
+                getClassColorType(
+                    displayClass
+                );
+
+
+            let raceNameClass =
+                "";
+
+
+            if (colorType) {
+
+                raceNameClass =
+                    `race-name-cell-${colorType}`;
+
+            }
+
+
+            /* クラス表示 */
+
+            let classBadge =
+                "";
+
+
+            if (
+                displayClass
+            ) {
+
+                if (
+                    colorType
+                ) {
+
+                    classBadge = `
+
+                        <span
+                            class="
+                                race-class-badge
+                                race-class-${colorType}
+                            "
+                        >
+                            （${escapeHTML(
+                                displayClass
+                            )}）
+                        </span>
+
+                    `;
+
+                }
+
+                else {
+
+                    classBadge = `
+
+                        <span
+                            class="race-class-normal"
+                        >
+                            （${escapeHTML(
+                                displayClass
+                            )}）
+                        </span>
+
+                    `;
+
+                }
+
+            }
+
+
+            /* レース名種別 */
+
+            const raceNameType =
+                race.raceNameType ||
+                "";
+
+
+            let raceNameSuffix =
+                "";
+
+
+            if (
+                raceNameType
+            ) {
+
+                raceNameSuffix =
+                    escapeHTML(
+                        raceNameType
+                    );
+
+            }
+
+
+            /* 距離 */
+
+            const surface =
+                race.surface ||
+                "芝";
+
+
+            const distance =
+                race.distance
+                    ? `${surface}${escapeHTML(
+                        race.distance
+                    )}m`
+                    : "";
+
+
+            /* 開催 */
+
+            let raceDate =
+                "";
+
+
+            if (
+                race.year ||
+                race.month ||
+                race.week
+            ) {
+
+                raceDate =
+                    `${escapeHTML(
+                        race.year
+                    )}年` +
+
+                    `${escapeHTML(
+                        race.month
+                    )}月` +
+
+                    `${escapeHTML(
+                        race.week
+                    )}週`;
+
+            }
+
+
+            /* 斤量 */
+
+            const weightDisplay =
+                race.weight
+                    ? `${escapeHTML(
+                        race.weight
+                    )}kg`
+                    : "";
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${raceDate}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            race.place
+                        )}
+                    </td>
+
+                    <td
+                        class="
+                            race-name-cell
+                            ${raceNameClass}
+                        "
+                    >
+
+                        <span
+                            class="race-name"
+                        >
+                            ${escapeHTML(
+                                race.raceName
+                            )}${raceNameSuffix}
+                        </span>
+
+                        ${classBadge}
+
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            race.numberOfHorses
+                        )}
+                    </td>
+
+                    <td
+                        class="${popularityClass}"
+                    >
+                        ${escapeHTML(
+                            race.popularity
+                        )}
+                    </td>
+
+                    <td
+                        class="${finishClass}"
+                    >
+                        ${escapeHTML(
+                            race.finish
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            race.jockey
+                        )}
+                    </td>
+
+                    <td>
+                        ${weightDisplay}
+                    </td>
+
+                    <td>
+                        ${distance}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            race.trackCondition ||
+                            "良"
+                        )}
+                    </td>
+
+                    <td>
+                        ${
+                            race.horseWeight
+                                ? escapeHTML(
+                                    race.horseWeight
+                                )
+                                : ""
+                        }
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-edit-small"
+                            onclick="editRace(${race.id})"
+                        >
+                            編集
+                        </button>
+
+                        <button
+                            class="btn-delete-small"
+                            onclick="deleteRace(${race.id})"
+                        >
+                            削除
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    table.innerHTML =
+        html;
+
+    renderStats();
+    renderAwards();
+
+}
+
+
+/* =========================================================
+   受賞歴
+========================================================= */
+
+function renderAwards() {
+
+    const horseId = Number(
+        document.getElementById("horseSelect").value
+    );
+
+    const area = document.getElementById("awardList");
+
+    if (!area) {
+        return;
+    }
+
+    if (!horseId) {
+        area.innerHTML = "";
+        return;
+    }
+
+    const horse = horses.find(h => h.id === horseId);
+
+    if (!horse) {
+        area.innerHTML = "";
+        return;
+    }
+
+    if (!Array.isArray(horse.awards)) {
+        horse.awards = [];
+    }
+
+    const awards = [...horse.awards].sort((a, b) => {
+        const yearDiff = (Number(b.year) || 0) - (Number(a.year) || 0);
+        if (yearDiff !== 0) {
+            return yearDiff;
+        }
+        return (Number(b.id) || 0) - (Number(a.id) || 0);
+    });
+
+    if (awards.length === 0) {
+        area.innerHTML = `<div class="award-empty">受賞歴はありません。</div>`;
+        return;
+    }
+
+    area.innerHTML = awards.map(award => `
+        <div class="award-item">
+            <div class="award-item-year">${escapeHTML(award.year)}年度</div>
+            <div class="award-item-name">${escapeHTML(award.name)}　受賞</div>
+            <div class="award-item-action">
+                <button
+                    type="button"
+                    class="btn-delete-small"
+                    onclick="deleteAward(${Number(award.id)})"
+                >
+                    削除
+                </button>
+            </div>
+        </div>
+    `).join("");
+}
+
+function addAward() {
+
+    const horseId = Number(
+        document.getElementById("horseSelect").value
+    );
+
+    const horse = horses.find(h => h.id === horseId);
+
+    if (!horse) {
+        alert("先に馬を選択してください。");
+        return;
+    }
+
+    const year = document.getElementById("awardYear").value.trim();
+    const name = document.getElementById("awardName").value;
+
+    if (!year) {
+        alert("受賞した年を入力してください。");
+        return;
+    }
+
+    if (!name) {
+        alert("賞名を選択してください。");
+        return;
+    }
+
+    if (!Array.isArray(horse.awards)) {
+        horse.awards = [];
+    }
+
+    horse.awards.push({
+        id: Date.now(),
+        year: year,
+        name: name
+    });
+
+    saveData();
+
+    document.getElementById("awardYear").value = "";
+    document.getElementById("awardName").value = "";
+
+    renderAwards();
+}
+
+function deleteAward(awardId) {
+
+    const horseId = Number(
+        document.getElementById("horseSelect").value
+    );
+
+    const horse = horses.find(h => h.id === horseId);
+
+    if (!horse || !Array.isArray(horse.awards)) {
+        return;
+    }
+
+    if (!confirm("この受賞歴を削除しますか？")) {
+        return;
+    }
+
+    horse.awards = horse.awards.filter(
+        award => Number(award.id) !== Number(awardId)
+    );
+
+    saveData();
+    renderAwards();
+}
+
+
+function isValidRaceResult(race) {
+    const finish = String(race.finish || "");
+    return finish !== "" && finish !== "除外" && finish !== "中止";
+}
+
+function calculateRecord(races, filterFunction = null) {
+    let starts = 0, first = 0, second = 0, third = 0, fourthOrWorse = 0;
+    races.forEach(race => {
+        if (!isValidRaceResult(race)) return;
+        if (filterFunction && !filterFunction(race)) return;
+        starts++;
+        if (String(race.finish) === "1") first++;
+        else if (String(race.finish) === "2") second++;
+        else if (String(race.finish) === "3") third++;
+        else fourthOrWorse++;
+    });
+    return { starts, first, second, third, fourthOrWorse };
+}
+
+function formatRecord(record) {
+    return `${record.starts}戦${record.first}勝 [${record.first}-${record.second}-${record.third}-${record.fourthOrWorse}]`;
+}
+
+function renderStats() {
+    const horseId = Number(document.getElementById("horseSelect").value);
+    const area = document.getElementById("statsArea");
+    if (!horseId) {
+        area.innerHTML = `<div class="empty-message">馬を選択すると条件別成績が表示されます。</div>`;
+        return;
+    }
+    const horse = horses.find(h => h.id === horseId);
+    if (!horse) { area.innerHTML = ""; return; }
+    const races = Array.isArray(horse.races) ? horse.races : [];
+    const rightTracks = new Set(["中山", "京都", "阪神", "福島", "函館", "札幌", "小倉"]);
+    const leftTracks = new Set(["東京", "新潟", "中京", "船橋", "川崎", "浦和", "盛岡", "大井"]);
+    const gradedClasses = new Set(["GⅠ", "GⅡ", "GⅢ", "JpnⅠ", "JpnⅡ", "JpnⅢ"]);
+    const sections = [
+        { title: "回り別成績", items: [
+            { label: "右回り", record: calculateRecord(races, race => rightTracks.has(race.place)) },
+            { label: "左回り", record: calculateRecord(races, race => leftTracks.has(race.place)) }
+        ]},
+        { title: "芝・ダート別成績", items: [
+            { label: "芝", record: calculateRecord(races, race => race.surface === "芝") },
+            { label: "ダート", record: calculateRecord(races, race => race.surface === "ダート") }
+        ]},
+        { title: "馬場状態別成績", items: [
+            { label: "良", record: calculateRecord(races, race => (race.trackCondition || "良") === "良") },
+            { label: "稍重", record: calculateRecord(races, race => race.trackCondition === "稍重") },
+            { label: "重", record: calculateRecord(races, race => race.trackCondition === "重") },
+            { label: "不良", record: calculateRecord(races, race => race.trackCondition === "不良") }
+        ]},
+        { title: "重賞戦績", items: [
+            { label: "重賞", record: calculateRecord(races, race => gradedClasses.has(normalizeRaceClass(race.raceClass))) },
+            { label: "GⅠ", record: calculateRecord(races, race => { const c = normalizeRaceClass(race.raceClass); return c === "GⅠ" || c === "JpnⅠ"; }) },
+            { label: "GⅡ", record: calculateRecord(races, race => { const c = normalizeRaceClass(race.raceClass); return c === "GⅡ" || c === "JpnⅡ"; }) },
+            { label: "GⅢ", record: calculateRecord(races, race => { const c = normalizeRaceClass(race.raceClass); return c === "GⅢ" || c === "JpnⅢ"; }) }
+        ]}
+    ];
+    const usedDistances = [...new Set(races.filter(isValidRaceResult).map(race => String(race.distance || "").trim()).filter(Boolean))].sort((a,b) => Number(a)-Number(b));
+    sections.push({ title: "距離別成績", items: usedDistances.map(distance => ({ label: `${distance}m`, record: calculateRecord(races, race => String(race.distance || "") === distance) })) });
+    area.innerHTML = sections.map(section => {
+        if (!section.items.length) return "";
+        return `<div class="stats-section"><div class="stats-section-title">${section.title}</div><div class="stats-list">${section.items.map(item => `<div class="stats-item"><span class="stats-label">${escapeHTML(item.label)}</span>${escapeHTML(formatRecord(item.record))}</div>`).join("")}</div></div>`;
+    }).join("");
+}
+
+
+/* =========================================================
+   レース編集
+========================================================= */
+
+function editRace(raceId) {
+
+    const horseId =
+        Number(
+            document.getElementById(
+                "horseSelect"
+            ).value
+        );
+
+
+    const horse =
+        horses.find(
+            h =>
+                h.id ===
+                horseId
+        );
+
+
+    if (!horse) {
+        return;
+    }
+
+
+    const race =
+        horse.races.find(
+            r =>
+                r.id ===
+                raceId
+        );
+
+
+    if (!race) {
+        return;
+    }
+
+
+    document.getElementById(
+        "year"
+    ).value =
+        race.year || "";
+
+
+    document.getElementById(
+        "month"
+    ).value =
+        race.month || "1";
+
+
+    document.getElementById(
+        "week"
+    ).value =
+        race.week || "1";
+
+
+    document.getElementById(
+        "place"
+    ).value =
+        race.place || "";
+
+
+    document.getElementById(
+        "raceName"
+    ).value =
+        race.raceName || "";
+
+
+    document.getElementById(
+        "raceNameType"
+    ).value =
+        race.raceNameType || "";
+
+
+    document.getElementById(
+        "raceClass"
+    ).value =
+        normalizeRaceClass(
+            race.raceClass
+        );
+
+
+    document.getElementById(
+        "numberOfHorses"
+    ).value =
+        race.numberOfHorses ||
+        "1";
+
+
+    document.getElementById(
+        "popularity"
+    ).value =
+        race.popularity ||
+        "1";
+
+
+    document.getElementById(
+        "finish"
+    ).value =
+        race.finish ||
+        "1";
+
+
+    document.getElementById(
+        "jockey"
+    ).value =
+        race.jockey || "";
+
+
+    document.getElementById(
+        "weight"
+    ).value =
+        race.weight || "";
+
+
+    document.getElementById(
+        "surface"
+    ).value =
+        race.surface ||
+        "芝";
+
+
+    document.getElementById(
+        "distance"
+    ).value =
+        race.distance || "";
+
+
+    document.getElementById(
+        "trackCondition"
+    ).value =
+        race.trackCondition ||
+        "良";
+
+
+    document.getElementById(
+        "horseWeight"
+    ).value =
+        race.horseWeight || "";
+
+
+    editingRaceId =
+        raceId;
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+
+/* =========================================================
+   レース削除
+========================================================= */
+
+function deleteRace(raceId) {
+
+    const horseId =
+        Number(
+            document.getElementById(
+                "horseSelect"
+            ).value
+        );
+
+
+    const horse =
+        horses.find(
+            h =>
+                h.id ===
+                horseId
+        );
+
+
+    if (!horse) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "このレースデータを削除しますか？"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    horse.races =
+        horse.races.filter(
+            r =>
+                r.id !==
+                raceId
+        );
+
+
+    /*
+       削除後の最新レースから
+       前回入力値を再設定
+    */
+
+    if (
+        horse.races.length > 0
+    ) {
+
+        const lastInput =
+            getLastInputData({
+                races:
+                    horse.races
+            });
+
+
+        horse.lastInput =
+            lastInput;
+
+    }
+
+    else {
+
+        horse.lastInput = {
+
+            year: "",
+            jockey: "",
+            horseWeight: ""
+
+        };
+
+    }
+
+
+    saveData();
+
+
+    clearRaceForm(
+        false
+    );
+
+
+    renderHorseList(
+        horse.id
+    );
+
+
+    renderRaces();
+
+}
+
+
+/* =========================================================
+   入力クリア
+========================================================= */
+
+function clearRaceForm(
+    showConfirm = true
+) {
+
+    if (
+        showConfirm
+    ) {
+
+        const result =
+            confirm(
+                "入力内容をリセットしますか？\n\n" +
+                "入力中の内容はすべて消えます。"
+            );
+
+
+        if (!result) {
+
+            return false;
+
+        }
+
+    }
+
+
+    /*
+       年
+    */
+
+    document.getElementById(
+        "year"
+    ).value =
+        "";
+
+
+    /*
+       月
+    */
+
+    document.getElementById(
+        "month"
+    ).value =
+        "1";
+
+
+    /*
+       開催週
+    */
+
+    document.getElementById(
+        "week"
+    ).value =
+        "1";
+
+
+    /*
+       開催場所
+    */
+
+    document.getElementById(
+        "place"
+    ).value =
+        "";
+
+
+    /*
+       レース名
+    */
+
+    document.getElementById(
+        "raceName"
+    ).value =
+        "";
+
+
+    /*
+       レース名種別
+    */
+
+    document.getElementById(
+        "raceNameType"
+    ).value =
+        "";
+
+
+    /*
+       クラス
+    */
+
+    document.getElementById(
+        "raceClass"
+    ).value =
+        "";
+
+
+    /*
+       頭数
+    */
+
+    document.getElementById(
+        "numberOfHorses"
+    ).value =
+        "1";
+
+
+    /*
+       人気
+    */
+
+    document.getElementById(
+        "popularity"
+    ).value =
+        "1";
+
+
+    /*
+       着順
+    */
+
+    document.getElementById(
+        "finish"
+    ).value =
+        "1";
+
+
+    /*
+       騎手
+
+       ※クリア後、馬選択時に
+       その馬の前回値が入る
+    */
+
+    document.getElementById(
+        "jockey"
+    ).value =
+        "";
+
+
+    /*
+       斤量
+    */
+
+    document.getElementById(
+        "weight"
+    ).value =
+        "";
+
+
+    /*
+       芝・ダート
+    */
+
+    document.getElementById(
+        "surface"
+    ).value =
+        "芝";
+
+
+    /*
+       距離
+    */
+
+    document.getElementById(
+        "distance"
+    ).value =
+        "";
+
+
+    /*
+       馬場状態
+    */
+
+    document.getElementById(
+        "trackCondition"
+    ).value =
+        "良";
+
+
+    /*
+       馬体重
+    */
+
+    document.getElementById(
+        "horseWeight"
+    ).value =
+        "";
+
+
+    editingRaceId =
+        null;
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   バックアップ
+========================================================= */
+
+function backupData() {
+
+    if (
+        !horses ||
+        horses.length === 0
+    ) {
+
+        if (
+            !confirm(
+                "現在、登録されている馬がありません。\n\n" +
+                "空のバックアップファイルを作成しますか？"
+            )
+        ) {
+
+            return;
+
+        }
+
+    }
+
+
+    const data =
+        JSON.stringify(
+            horses,
+            null,
+            2
+        );
+
+
+    const blob =
+        new Blob(
+            [data],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const now =
+        new Date();
+
+
+    const year =
+        now.getFullYear();
+
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const fileName =
+        `keiba_backup_${year}-${month}-${day}.json`;
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        fileName;
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    document.body.removeChild(
+        link
+    );
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+
+    alert(
+        "バックアップを保存しました。"
+    );
+
+}
+
+
+/* =========================================================
+   バックアップ復元
+========================================================= */
+
+function restoreData(event) {
+
+    const file =
+        event.target.files[0];
+
+
+    if (!file) {
+        return;
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function () {
+
+            try {
+
+                const importedData =
+                    JSON.parse(
+                        reader.result
+                    );
+
+
+                if (
+                    !Array.isArray(
+                        importedData
+                    )
+                ) {
+
+                    throw new Error(
+                        "データ形式が正しくありません。"
+                    );
+
+                }
+
+
+                const validData =
+                    importedData.every(
+                        horse =>
+                            horse &&
+                            typeof horse ===
+                                "object" &&
+                            "name" in horse &&
+                            Array.isArray(
+                                horse.races
+                            )
+                    );
+
+
+                if (!validData) {
+
+                    throw new Error(
+                        "競走馬データとして認識できません。"
+                    );
+
+                }
+
+
+                if (
+                    !confirm(
+                        "現在のデータをバックアップデータで上書きしますか？\n\n" +
+                        "現在登録されている馬・レースデータは置き換わります。"
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                horses =
+                    importedData;
+
+
+                /*
+                   古いデータを新形式へ変換
+                */
+
+                horses.forEach(
+                    horse => {
+
+                        if (
+                            !Array.isArray(
+                                horse.races
+                            )
+                        ) {
+
+                            horse.races =
+                                [];
+
+                        }
+
+
+                        if (
+                            !Array.isArray(
+                                horse.awards
+                            )
+                        ) {
+
+                            horse.awards =
+                                [];
+
+                        }
+
+
+                        /*
+                           G1/G2/G3を変換
+                        */
+
+                        horse.races.forEach(
+                            race => {
+
+                                if (
+                                    race.raceClass ===
+                                    "G1"
+                                ) {
+
+                                    race.raceClass =
+                                        "GⅠ";
+
+                                }
+
+                                else if (
+                                    race.raceClass ===
+                                    "G2"
+                                ) {
+
+                                    race.raceClass =
+                                        "GⅡ";
+
+                                }
+
+                                else if (
+                                    race.raceClass ===
+                                    "G3"
+                                ) {
+
+                                    race.raceClass =
+                                        "GⅢ";
+
+                                }
+
+                            }
+                        );
+
+
+                        /*
+                           lastInputがない古いデータは
+                           最後のレースから作成
+                        */
+
+                        if (
+                            !horse.lastInput
+                        ) {
+
+                            horse.lastInput =
+                                getLastInputData(
+                                    horse
+                                );
+
+                        }
+
+                    }
+                );
+
+
+                saveData();
+
+
+                renderHorseList();
+
+
+                document.getElementById(
+                    "horseSelect"
+                ).value =
+                    "";
+
+
+                clearRaceForm(
+                    false
+                );
+
+
+                renderRaces();
+
+
+                alert(
+                    "バックアップからデータを復元しました。"
+                );
+
+            }
+
+
+            catch (error) {
+
+                alert(
+                    "バックアップの読み込みに失敗しました。\n\n" +
+                    error.message
+                );
+
+            }
+
+
+            finally {
+
+                event.target.value =
+                    "";
+
+            }
+
+        };
+
+
+    reader.readAsText(
+        file,
+        "UTF-8"
+    );
+
+}
+
+
+/* =========================================================
+   馬を選択したとき
+========================================================= */
+
+document
+    .getElementById(
+        "horseSelect"
+    )
+    .addEventListener(
+        "change",
+        function () {
+
+            /*
+               入力中の内容を一度クリア
+            */
+
+            clearRaceForm(
+                false
+            );
+
+
+            const horseId =
+                Number(
+                    this.value
+                );
+
+
+            if (horseId) {
+
+                const horse =
+                    horses.find(
+                        h =>
+                            h.id ===
+                            horseId
+                    );
+
+
+                if (horse) {
+
+                    /*
+                       その馬の前回入力値を復元
+                    */
+
+                    applyLastInputData(
+                        horse
+                    );
+
+                }
+
+            }
+
+
+            renderRaces();
+
+        }
+    );
+
+
+/* =========================================================
+   初期表示
+========================================================= */
+
+renderHorseList();
+
+renderRaces();
+
+/* Firebaseの初期読み込みを開始 */
+initializeCloudSync();
+
+</script>
+
+</body>
+</html>
