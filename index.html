@@ -292,6 +292,35 @@ button {
     color: #dc3545;
 }
 
+.auth-area {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #ddd;
+}
+
+.auth-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.auth-status {
+    font-size: 12px;
+    color: #666;
+}
+
+.auth-status.ok {
+    color: #198754;
+}
+
+.auth-status.error {
+    color: #dc3545;
+}
+
+.auth-buttons {
+    margin-top: 8px;
+}
+
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
@@ -544,6 +573,7 @@ td:nth-child(12) {
 ========================================================= -->
 <script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -556,6 +586,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 const db = firebase.firestore();
 const cloudDataRef = db.collection("appData").doc("main");
 </script>
@@ -659,8 +690,32 @@ const cloudDataRef = db.collection("appData").doc("main");
                 onchange="restoreData(event)"
             >
 
+            <div class="auth-area">
+                <div class="auth-title">Googleログイン</div>
+                <div id="authStatus" class="auth-status">ログイン状態を確認しています…</div>
+                <div class="button-area auth-buttons">
+                    <button
+                        id="googleLoginButton"
+                        class="btn-primary"
+                        type="button"
+                        onclick="signInWithGoogle()"
+                    >
+                        Googleでログイン
+                    </button>
+                    <button
+                        id="googleLogoutButton"
+                        class="btn-secondary"
+                        type="button"
+                        onclick="signOutGoogle()"
+                        style="display:none"
+                    >
+                        ログアウト
+                    </button>
+                </div>
+            </div>
+
             <div id="cloudStatus" class="cloud-status">
-                クラウド同期を準備しています…
+                Googleログイン後にクラウド同期を開始します。
             </div>
 
         </div>
@@ -1271,6 +1326,81 @@ let horses =
 let editingRaceId = null;
 let cloudSyncReady = false;
 let cloudListenerStarted = false;
+let cloudUnsubscribe = null;
+let currentUser = null;
+
+function setAuthStatus(message, type = "") {
+    const area = document.getElementById("authStatus");
+    if (!area) {
+        return;
+    }
+    area.textContent = message;
+    area.className = `auth-status ${type}`.trim();
+}
+
+async function signInWithGoogle() {
+    const button = document.getElementById("googleLoginButton");
+
+    try {
+        if (button) {
+            button.disabled = true;
+            button.textContent = "ログインしています…";
+        }
+
+        const provider = new firebase.auth.GoogleAuthProvider();
+        await auth.signInWithPopup(provider);
+    } catch (error) {
+        console.error("Googleログインに失敗しました:", error);
+
+        if (error.code === "auth/popup-closed-by-user") {
+            setAuthStatus("Googleログインがキャンセルされました。", "error");
+        } else if (error.code === "auth/unauthorized-domain") {
+            setAuthStatus("このサイトのドメインがFirebaseで許可されていません。", "error");
+        } else {
+            setAuthStatus("Googleログインに失敗しました。", "error");
+        }
+    } finally {
+        if (button) {
+            button.disabled = false;
+            button.textContent = "Googleでログイン";
+        }
+    }
+}
+
+async function signOutGoogle() {
+    try {
+        await auth.signOut();
+    } catch (error) {
+        console.error("ログアウトに失敗しました:", error);
+        setAuthStatus("ログアウトに失敗しました。", "error");
+    }
+}
+
+function updateAuthUI(user) {
+    const loginButton = document.getElementById("googleLoginButton");
+    const logoutButton = document.getElementById("googleLogoutButton");
+
+    if (user) {
+        const displayName = user.displayName || user.email || "Googleアカウント";
+        setAuthStatus(`ログイン中：${displayName}`, "ok");
+
+        if (loginButton) {
+            loginButton.style.display = "none";
+        }
+        if (logoutButton) {
+            logoutButton.style.display = "inline-block";
+        }
+    } else {
+        setAuthStatus("Googleログインしていません。");
+
+        if (loginButton) {
+            loginButton.style.display = "inline-block";
+        }
+        if (logoutButton) {
+            logoutButton.style.display = "none";
+        }
+    }
+}
 
 function setCloudStatus(message, type = "") {
     const area = document.getElementById("cloudStatus");
@@ -1338,6 +1468,29 @@ async function saveData() {
     }
 }
 
+auth.onAuthStateChanged(async user => {
+    currentUser = user;
+    updateAuthUI(user);
+
+    if (!user) {
+        cloudSyncReady = false;
+
+        if (cloudUnsubscribe) {
+            cloudUnsubscribe();
+            cloudUnsubscribe = null;
+        }
+
+        cloudListenerStarted = false;
+        setCloudStatus("Googleログイン後にクラウド同期を開始します。");
+        normalizeHorseData();
+        renderHorseList();
+        renderRaces();
+        return;
+    }
+
+    await initializeCloudSync();
+});
+
 async function initializeCloudSync() {
     setCloudStatus("クラウド同期：接続しています…");
 
@@ -1378,7 +1531,7 @@ async function initializeCloudSync() {
         if (!cloudListenerStarted) {
             cloudListenerStarted = true;
 
-            cloudDataRef.onSnapshot(snapshot => {
+            cloudUnsubscribe = cloudDataRef.onSnapshot(snapshot => {
                 if (!snapshot.exists) {
                     return;
                 }
@@ -4025,8 +4178,6 @@ renderHorseList();
 
 renderRaces();
 
-/* Firebaseの初期読み込みを開始 */
-initializeCloudSync();
 
 </script>
 
