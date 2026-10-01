@@ -1349,16 +1349,19 @@ async function signInWithGoogle() {
 
         const provider = new firebase.auth.GoogleAuthProvider();
         await auth.signInWithPopup(provider);
+
     } catch (error) {
         console.error("Googleログインに失敗しました:", error);
 
-        if (error.code === "auth/popup-closed-by-user") {
-            setAuthStatus("Googleログインがキャンセルされました。", "error");
-        } else if (error.code === "auth/unauthorized-domain") {
-            setAuthStatus("このサイトのドメインがFirebaseで許可されていません。", "error");
-        } else {
-            setAuthStatus("Googleログインに失敗しました。", "error");
-        }
+        const code = error && error.code ? error.code : "エラーコード不明";
+        const message = error && error.message ? error.message : "詳細不明";
+
+        // 原因を画面に表示して確認できるようにする
+        setAuthStatus(`ログイン失敗：${code} / ${message}`, "error");
+
+        // 画面を見落としても分かるようにポップアップでも表示
+        alert(`Googleログインに失敗しました。\n\nエラーコード：${code}\n\n${message}`);
+
     } finally {
         if (button) {
             button.disabled = false;
