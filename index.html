@@ -518,7 +518,132 @@ td:nth-child(12) {
 .stats-list { display: flex; flex-wrap: wrap; gap: 6px 20px; }
 .stats-item { min-width: 210px; font-size: 14px; line-height: 1.8; }
 .stats-label { display: inline-block; width: 70px; font-weight: bold; }
-@media (max-width: 600px) { .stats-item { min-width: 100%; } }
+@media (max-width: 600px) {
+    .stats-item { min-width: 100%; }
+
+    /* スマホでは戦績表を横スクロールではなくカード表示にする */
+    .table-wrapper {
+        overflow-x: visible;
+    }
+
+    table {
+        min-width: 0;
+        width: 100%;
+        display: block;
+        font-size: 13px;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tbody {
+        display: block;
+    }
+
+    tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        margin-bottom: 12px;
+        border: 1px solid #c8c8c8;
+        border-radius: 5px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    tbody td {
+        width: auto !important;
+        min-width: 0;
+        height: auto;
+        min-height: 42px;
+        padding: 7px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        white-space: normal;
+        text-align: right;
+        border-width: 0 1px 1px 0;
+        border-style: solid;
+        border-color: #e0e0e0;
+    }
+
+    tbody td::before {
+        flex-shrink: 0;
+        color: #777;
+        font-size: 11px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    tbody td:nth-child(1)::before { content: "開催"; }
+    tbody td:nth-child(2)::before { content: "開催場所"; }
+    tbody td:nth-child(3)::before { content: "レース名"; }
+    tbody td:nth-child(4)::before { content: "頭数"; }
+    tbody td:nth-child(5)::before { content: "人気"; }
+    tbody td:nth-child(6)::before { content: "着順"; }
+    tbody td:nth-child(7)::before { content: "騎手"; }
+    tbody td:nth-child(8)::before { content: "斤量"; }
+    tbody td:nth-child(9)::before { content: "距離"; }
+    tbody td:nth-child(10)::before { content: "馬場"; }
+    tbody td:nth-child(11)::before { content: "馬体重"; }
+    tbody td:nth-child(12)::before { content: "操作"; }
+
+    /* レース名・操作はカード幅いっぱい */
+    tbody td:nth-child(3),
+    tbody td:nth-child(12) {
+        grid-column: 1 / -1;
+    }
+
+    tbody td:nth-child(3) {
+        min-height: 50px;
+        justify-content: flex-start;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    tbody td:nth-child(3)::before {
+        margin-right: 4px;
+    }
+
+    tbody td:nth-child(12) {
+        border-right: 0;
+        border-bottom: 0;
+        justify-content: flex-end;
+    }
+
+    tbody td:nth-child(11) {
+        border-bottom: 0;
+    }
+
+    tbody td:nth-child(10) {
+        border-bottom: 0;
+    }
+
+    tbody td:nth-child(2n) {
+        border-right: 0;
+    }
+
+    tbody td:nth-child(4),
+    tbody td:nth-child(5),
+    tbody td:nth-child(6) {
+        justify-content: space-between;
+    }
+
+    .race-name-cell {
+        overflow-wrap: anywhere;
+    }
+
+    .race-name {
+        line-height: 1.45;
+    }
+
+    .race-class-badge,
+    .race-class-normal {
+        font-size: 10px;
+    }
+}
 
 @media (max-width: 900px) {
     .form-grid {
@@ -577,7 +702,7 @@ td:nth-child(12) {
 
 <script>
 const firebaseConfig = {
-    apiKey: "AIzaSyB2z2Q7CTX6Wt2HBIuAL4XyZaExNYZTULk",
+    apiKey: "AIzaSyB2z2Q7CTXWt2HBIuAL4XyZaExNYZTULk",
     authDomain: "my-dabista-db.firebaseapp.com",
     projectId: "my-dabista-db",
     storageBucket: "my-dabista-db.firebasestorage.app",
@@ -1484,10 +1609,10 @@ auth.onAuthStateChanged(async user => {
         }
 
         cloudListenerStarted = false;
-        setCloudStatus("Googleログイン後にクラウド同期を開始します。");
-        normalizeHorseData();
-        renderHorseList();
-        renderRaces();
+
+        // 未ログインでもFirestoreの最新データは読み取る。
+        // 書き込みはFirestore Security Rulesで本人のUIDだけ許可する。
+        await initializeCloudSync();
         return;
     }
 
