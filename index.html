@@ -521,9 +521,9 @@ td:nth-child(12) {
 @media (max-width: 600px) {
     .stats-item { min-width: 100%; }
 
-    /* スマホでは戦績表を横スクロールではなくカード表示にする */
+    /* スマホ用：横長の表ではなく、競馬サイト風のコンパクトな戦績カード */
     .table-wrapper {
-        overflow-x: visible;
+        overflow: visible;
     }
 
     table {
@@ -543,105 +543,160 @@ td:nth-child(12) {
 
     tbody tr {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0;
-        margin-bottom: 12px;
-        border: 1px solid #c8c8c8;
-        border-radius: 5px;
-        overflow: hidden;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-rows: auto auto auto auto auto;
+        margin-bottom: 7px;
+        border-top: 1px solid #cfcfcf;
+        border-bottom: 1px solid #cfcfcf;
         background: #fff;
+        overflow: hidden;
     }
 
     tbody td {
         width: auto !important;
         min-width: 0;
         height: auto;
-        min-height: 42px;
-        padding: 7px 8px;
+        min-height: 0;
+        padding: 3px 5px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 8px;
+        gap: 4px;
         white-space: normal;
-        text-align: right;
-        border-width: 0 1px 1px 0;
-        border-style: solid;
-        border-color: #e0e0e0;
+        text-align: left;
+        border: 0;
+        border-right: 1px solid #e3e3e3;
+        border-bottom: 1px solid #e3e3e3;
+        line-height: 1.25;
+        overflow: hidden;
     }
 
     tbody td::before {
-        flex-shrink: 0;
-        color: #777;
-        font-size: 11px;
-        font-weight: bold;
-        text-align: left;
+        display: none;
     }
 
-    tbody td:nth-child(1)::before { content: "開催"; }
-    tbody td:nth-child(2)::before { content: "開催場所"; }
-    tbody td:nth-child(3)::before { content: "レース名"; }
-    tbody td:nth-child(4)::before { content: "頭数"; }
-    tbody td:nth-child(5)::before { content: "人気"; }
-    tbody td:nth-child(6)::before { content: "着順"; }
-    tbody td:nth-child(7)::before { content: "騎手"; }
-    tbody td:nth-child(8)::before { content: "斤量"; }
-    tbody td:nth-child(9)::before { content: "距離"; }
-    tbody td:nth-child(10)::before { content: "馬場"; }
-    tbody td:nth-child(11)::before { content: "馬体重"; }
-    tbody td:nth-child(12)::before { content: "操作"; }
-
-    /* レース名・操作はカード幅いっぱい */
-    tbody td:nth-child(3),
-    tbody td:nth-child(12) {
-        grid-column: 1 / -1;
+    /* 1行目：日付 / 開催場所 */
+    tbody td:nth-child(1) {
+        grid-column: 1 / 4;
+        grid-row: 1;
+        color: #555;
+        font-size: 12px;
+        white-space: nowrap;
     }
 
+    tbody td:nth-child(2) {
+        grid-column: 4 / 7;
+        grid-row: 1;
+        color: #555;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    /* 2行目：レース名 / 着順 */
     tbody td:nth-child(3) {
-        min-height: 50px;
+        grid-column: 1 / 5;
+        grid-row: 2;
+        min-height: 42px;
         justify-content: flex-start;
-        text-align: left;
         font-size: 14px;
+        padding: 4px 5px;
     }
 
-    tbody td:nth-child(3)::before {
-        margin-right: 4px;
-    }
-
-    tbody td:nth-child(12) {
-        border-right: 0;
-        border-bottom: 0;
-        justify-content: flex-end;
-    }
-
-    tbody td:nth-child(11) {
-        border-bottom: 0;
-    }
-
-    tbody td:nth-child(10) {
-        border-bottom: 0;
-    }
-
-    tbody td:nth-child(2n) {
-        border-right: 0;
-    }
-
-    tbody td:nth-child(4),
-    tbody td:nth-child(5),
-    tbody td:nth-child(6) {
-        justify-content: space-between;
-    }
-
-    .race-name-cell {
+    tbody td:nth-child(3) .race-name {
+        line-height: 1.2;
         overflow-wrap: anywhere;
     }
 
-    .race-name {
-        line-height: 1.45;
+    tbody td:nth-child(3) .race-class-badge,
+    tbody td:nth-child(3) .race-class-normal {
+        flex-shrink: 0;
+        margin-left: 2px;
+        font-size: 9px;
     }
 
-    .race-class-badge,
-    .race-class-normal {
+    tbody td:nth-child(6) {
+        grid-column: 5 / 7;
+        grid-row: 2;
+        justify-content: center;
+        text-align: center;
+        font-size: 23px;
+        font-weight: bold;
+        min-height: 42px;
+        border-right: 0;
+    }
+
+    /* 3行目：騎手 / 斤量 */
+    tbody td:nth-child(7) {
+        grid-column: 1 / 4;
+        grid-row: 3;
+        color: #444;
+    }
+
+    tbody td:nth-child(8) {
+        grid-column: 4 / 7;
+        grid-row: 3;
+        color: #444;
+        border-right: 0;
+    }
+
+    /* 4行目：頭数 / 人気 / 距離 */
+    tbody td:nth-child(4) {
+        grid-column: 1 / 2;
+        grid-row: 4;
+        justify-content: center;
+        text-align: center;
+        color: #555;
+    }
+
+    tbody td:nth-child(5) {
+        grid-column: 2 / 3;
+        grid-row: 4;
+        justify-content: center;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    tbody td:nth-child(9) {
+        grid-column: 3 / 5;
+        grid-row: 4;
+        color: #333;
+        white-space: nowrap;
+    }
+
+    tbody td:nth-child(10) {
+        grid-column: 5 / 7;
+        grid-row: 4;
+        color: #555;
+        border-right: 0;
+        white-space: nowrap;
+    }
+
+    /* 5行目：馬体重 / 操作 */
+    tbody td:nth-child(11) {
+        grid-column: 1 / 4;
+        grid-row: 5;
+        color: #555;
+        border-bottom: 0;
+    }
+
+    tbody td:nth-child(12) {
+        grid-column: 4 / 7;
+        grid-row: 5;
+        justify-content: flex-end;
+        border-right: 0;
+        border-bottom: 0;
+    }
+
+    tbody td:nth-child(12) .btn-edit-small,
+    tbody td:nth-child(12) .btn-delete-small {
+        padding: 3px 7px;
         font-size: 10px;
+        margin: 0 0 0 3px;
+    }
+
+    .rank-gold,
+    .rank-silver,
+    .rank-bronze {
+        font-weight: bold;
     }
 }
 
@@ -702,7 +757,7 @@ td:nth-child(12) {
 
 <script>
 const firebaseConfig = {
-    apiKey: "AIzaSyB2z2Q7CTXWt2HBIuAL4XyZaExNYZTULk",
+    apiKey: "AIzaSyB2z2Q7CTX6Wt2HBIuAL4XyZaExNYZTULk",
     authDomain: "my-dabista-db.firebaseapp.com",
     projectId: "my-dabista-db",
     storageBucket: "my-dabista-db.firebasestorage.app",
